@@ -1,0 +1,88 @@
+const userRepository = require('../repositories/user.repository');
+const bcrypt = require('bcryptjs');
+
+class UserService {
+  async getAllUsers(query) {
+    const page = parseInt(query.page, 10) || 1;
+    const limit = parseInt(query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    // Filter build-up
+    const filter = {};
+    
+    // Feature: Pencarian berdasarkan username
+    if (query.username) {
+      filter.username = { $regex: query.username, $options: 'i' }; // Case-insensitive partial match
+    }
+
+    // Feature: Hanya memanggil list user yang aktif (atau bisa filter aktif/non-aktif)
+    if (query.isActive !== undefined) {
+      filter.isActive = query.isActive === 'true';
+    }
+
+    if (query.role) {
+      filter.role = query.role;
+    }
+
+    const { data, total } = await userRepository.findAllPaginated(filter, { skip, limit });
+
+    return {
+      users: data,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async searchCompanies(searchQuery) {
+    if (!searchQuery) {
+      return [];
+    }
+    return await userRepository.findDistinctCompanies(searchQuery);
+  }
+
+  async getUserById(id) {
+    const user = await userRepository.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
+  }
+
+  async updateUser(id, updateData) {
+    // If they attempt to update password through this route, handle hashing
+    if (updateData.password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.passwordHash = await bcrypt.hash(updateData.password, salt);
+      delete updateData.password;
+    }
+
+    const updatedUser = await userRepository.updateById(id, updateData);
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+    return updatedUser;
+  }
+
+  // Feature: Aktivasi/Deaktivasi User (bisa menggunakan updateUser, tapi dibuat modular untuk kejelasan)
+  async toggleUserActivation(id, isActiveStatus) {
+    const updatedUser = await userRepository.updateById(id, { isActive: isActiveStatus });
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+    return updatedUser;
+  }
+
+  async deleteUser(id) {
+    const deletedUser = await userRepository.deleteById(id);
+    if (!deletedUser) {
+       throw new Error('User not found');
+    }
+    return deletedUser;
+  }
+}
+
+module.exports = new UserService();

@@ -1,0 +1,599 @@
+{
+	"info": {
+		"_postman_id": "aa123b45-1234-5678-abcd-ef0987654321",
+		"name": "KLH Methodology Service",
+		"description": "API Collection for KLH Methodology Document Review System integrated with OpenKM.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "0. Search Company Autocomplete",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/companies?q=PT",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"companies"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "PT"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "1. Register Publisher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"Publisher Budi\",\n  \"companyName\": \"PT. Budi Berkarya\",\n  \"email\": \"budi@publisher.com\",\n  \"password\": \"password123\",\n  \"role\": \"PUBLISHER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "2. Register Internal (Tim KLH)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"Admin KLH\",\n  \"email\": \"admin@klh.go.id\",\n  \"password\": \"password123\",\n  \"role\": \"INTERNAL\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "3. Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData.success && jsonData.data.token) {",
+									"    pm.environment.set(\"jwt_token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@klh.go.id\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "4. Get My Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "User Management (INTERNAL ONLY)",
+			"item": [
+				{
+					"name": "1. Get All Users (Paginated)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users?page=1&limit=10&username=budi",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "username",
+									"value": "budi"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "2. Toggle User Active Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActive\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/:id/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "USER_ID_HERE"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Metadata Builder (INTERNAL)",
+			"item": [
+				{
+					"name": "1. Create Metadata Field",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"key\": \"doc_type\",\n  \"label\": \"Jenis Dokumen\",\n  \"dataType\": \"SELECT\",\n  \"isRequired\": true,\n  \"options\": [\"Metodologi Baru\", \"Metodologi Revisi\", \"Lainnya\"],\n  \"order\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/metadata",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metadata"
+							]
+						}
+					}
+				},
+				{
+					"name": "2. Get All Admin Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/metadata",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metadata"
+							]
+						}
+					}
+				},
+				{
+					"name": "3. Reorder Metadata",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderedIds\": [\n        \"673b...123\",\n        \"673b...456\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/metadata/reorder",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metadata",
+								"reorder"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Submissions",
+			"item": [
+				{
+					"name": "1. Get Active Form Configuration (For Publisher)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/metadata/active",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metadata",
+								"active"
+							]
+						}
+					}
+				},
+				{
+					"name": "2. Upload Submission (Form-Data)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Draft Metodologi Pengelolaan Sampah 2026",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Pengajuan dokumen pertama",
+									"type": "text"
+								},
+								{
+									"key": "submissionType",
+									"value": "NEW",
+									"type": "text"
+								},
+								{
+									"key": "doc_type",
+									"value": "Metodologi Baru",
+									"description": "Dynamic metadata filled based on active configuration",
+									"type": "text"
+								},
+								{
+									"key": "author_name",
+									"value": "Bapak Budi",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions"
+							]
+						}
+					}
+				},
+				{
+					"name": "3. Get List Submissions Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions?page=1&limit=10&internalReviewStatus=SUBMITTED",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "internalReviewStatus",
+									"value": "SUBMITTED"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "4. Detail Submission",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "SUBMISSION_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "5. Add Review Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": \"Mohon perbaiki pada bagian metodologi bab 2, data sampel kurang akurat.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions/:id/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions",
+								":id",
+								"comments"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "SUBMISSION_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "6. Approve / Reject (INTERNAL ONLY)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"APPROVED\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions/:id/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "SUBMISSION_ID_HERE"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
