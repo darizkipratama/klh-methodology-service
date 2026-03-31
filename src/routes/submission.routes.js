@@ -1,7 +1,7 @@
-const express = require('express');
-const multer = require('multer');
-const submissionController = require('../controllers/submission.controller');
-const { protect, authorize } = require('../middlewares/auth.middleware');
+import express from 'express';
+import multer from 'multer';
+import submissionController from '../controllers/submission.controller.js';
+import { protect, authorize  } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -41,4 +41,4 @@ router.post('/:id/comments', submissionController.addComment);
 // Endpoint khusus untuk admin yang memeriksa dan merubah status approve/reject
 router.patch('/:id/status', authorize('INTERNAL'), submissionController.updateStatus);
 
-module.exports = router;
+export default router;

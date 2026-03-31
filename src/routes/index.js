@@ -1,9 +1,9 @@
-const express = require('express');
-const authRoutes = require('./auth.routes');
+import express from 'express';
+import authRoutes from './auth.routes.js';
 
-const userRoutes = require('./user.routes');
-const metadataRoutes = require('./metadata.routes');
-const submissionRoutes = require('./submission.routes');
+import userRoutes from './user.routes.js';
+import metadataRoutes from './metadata.routes.js';
+import submissionRoutes from './submission.routes.js';
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.use('/users', userRoutes);
 router.use('/metadata', metadataRoutes);
 router.use('/submissions', submissionRoutes);
 
-module.exports = router;
+export default router;

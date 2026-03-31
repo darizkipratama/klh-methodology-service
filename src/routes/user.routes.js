@@ -1,6 +1,6 @@
-const express = require('express');
-const userController = require('../controllers/user.controller');
-const { protect, authorize } = require('../middlewares/auth.middleware');
+import express from 'express';
+import userController from '../controllers/user.controller.js';
+import { protect, authorize  } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -24,4 +24,4 @@ router.route('/:id')
 router.route('/:id/status')
   .patch(userController.toggleStatus); 
 
-module.exports = router;
+export default router;

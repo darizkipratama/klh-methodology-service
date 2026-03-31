@@ -1,5 +1,5 @@
-const submissionRepository = require('../repositories/submission.repository');
-const openKmService = require('./openkm.service');
+import submissionRepository from '../repositories/submission.repository.js';
+import openKmService from './openkm.service.js';
 
 class SubmissionService {
   
@@ -127,4 +127,4 @@ class SubmissionService {
   }
 }
 
-module.exports = new SubmissionService();
+export default new SubmissionService();

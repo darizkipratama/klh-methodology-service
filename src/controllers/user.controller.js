@@ -1,4 +1,4 @@
-const userService = require('../services/user.service');
+import userService from '../services/user.service.js';
 
 class UserController {
   // @desc    Get all users (with pagination & search)
@@ -113,4 +113,4 @@ class UserController {
   }
 }
 
-module.exports = new UserController();
+export default new UserController();

@@ -1,4 +1,5 @@
-const metadataRepository = require('../repositories/metadata.repository');
+import metadataRepository from '../repositories/metadata.repository.js';
+import MetadataConfig from '../models/metadataConfig.model.js';
 
 class MetadataService {
   async createMetadata(data) {
@@ -62,11 +63,11 @@ class MetadataService {
       },
     }));
 
-    const MetadataConfig = require('../models/metadataConfig.model');
+    
     await MetadataConfig.bulkWrite(bulkOps);
     
     return this.getAllMetadata(true);
   }
 }
 
-module.exports = new MetadataService();
+export default new MetadataService();

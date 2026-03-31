@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const submissionService = require('../../src/services/submission.service');
-const openKmService = require('../../src/services/openkm.service'); // We will mock this
-const User = require('../../src/models/user.model');
-const Submission = require('../../src/models/submission.model');
-const dbSetup = require('../setup/db.setup');
+import mongoose from 'mongoose';
+import submissionService from '../../src/services/submission.service.js';
+import openKmService from '../../src/services/openkm.service.js'; // We will mock this
+import User from '../../src/models/user.model.js';
+import Submission from '../../src/models/submission.model.js';
+import dbSetup from '../setup/db.setup.js';
 
 // Mock out the OpenKM integration so it doesn't try to make real HTTP calls
 jest.mock('../../src/services/openkm.service', () => {

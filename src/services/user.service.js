@@ -1,5 +1,5 @@
-const userRepository = require('../repositories/user.repository');
-const bcrypt = require('bcryptjs');
+import userRepository from '../repositories/user.repository.js';
+import bcrypt from 'bcryptjs';
 
 class UserService {
   async getAllUsers(query) {
@@ -85,4 +85,4 @@ class UserService {
   }
 }
 
-module.exports = new UserService();
+export default new UserService();

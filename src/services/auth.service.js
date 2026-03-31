@@ -1,6 +1,6 @@
-const userRepository = require('../repositories/user.repository');
-const bcrypt = require('bcryptjs');
-const { generateToken } = require('../utils/jwt.util');
+import userRepository from '../repositories/user.repository.js';
+import bcrypt from 'bcryptjs';
+import { generateToken  } from '../utils/jwt.util.js';
 
 class AuthService {
   async registerUser(data) {
@@ -68,4 +68,4 @@ class AuthService {
   }
 }
 
-module.exports = new AuthService();
+export default new AuthService();

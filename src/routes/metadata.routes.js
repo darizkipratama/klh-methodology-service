@@ -1,6 +1,6 @@
-const express = require('express');
-const metadataController = require('../controllers/metadata.controller');
-const { protect, authorize } = require('../middlewares/auth.middleware');
+import express from 'express';
+import metadataController from '../controllers/metadata.controller.js';
+import { protect, authorize  } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -27,4 +27,4 @@ router.route('/:id')
   .delete(metadataController.deleteMetadata);
 
 
-module.exports = router;
+export default router;

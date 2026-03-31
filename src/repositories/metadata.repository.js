@@ -1,4 +1,4 @@
-const MetadataConfig = require('../models/metadataConfig.model');
+import MetadataConfig from '../models/metadataConfig.model.js';
 
 class MetadataRepository {
   async create(data) {
@@ -27,4 +27,4 @@ class MetadataRepository {
   }
 }
 
-module.exports = new MetadataRepository();
+export default new MetadataRepository();

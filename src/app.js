@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import routes from './routes/index.js';
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 // Import Routes
-const routes = require('./routes');
+
 app.use('/api/v1', routes);
 
 // Global Error Handler
@@ -30,4 +31,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app;
+export default app;

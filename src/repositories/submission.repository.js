@@ -1,4 +1,4 @@
-const Submission = require('../models/submission.model');
+import Submission from '../models/submission.model.js';
 
 class SubmissionRepository {
   async create(data) {
@@ -38,4 +38,4 @@ class SubmissionRepository {
   }
 }
 
-module.exports = new SubmissionRepository();
+export default new SubmissionRepository();

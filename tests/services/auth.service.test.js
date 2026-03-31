@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const authService = require('../../src/services/auth.service');
-const dbSetup = require('../setup/db.setup');
-const { verifyToken } = require('../../src/utils/jwt.util');
+import mongoose from 'mongoose';
+import authService from '../../src/services/auth.service.js';
+import dbSetup from '../setup/db.setup.js';
+import { verifyToken } from '../../src/utils/jwt.util.js';
 
 // Supaya proses.env.JWT_SECRET terbaca buat generate token, kita mock ke global env
 process.env.JWT_SECRET = 'test-secret';

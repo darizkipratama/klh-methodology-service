@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const metadataService = require('../../src/services/metadata.service');
-const MetadataConfig = require('../../src/models/metadataConfig.model');
-const dbSetup = require('../setup/db.setup');
+import mongoose from 'mongoose';
+import metadataService from '../../src/services/metadata.service.js';
+import MetadataConfig from '../../src/models/metadataConfig.model.js';
+import dbSetup from '../setup/db.setup.js';
 
 beforeAll(async () => {
   await dbSetup.connect();

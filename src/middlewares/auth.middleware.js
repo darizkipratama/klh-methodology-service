@@ -1,4 +1,4 @@
-const { verifyToken } = require('../utils/jwt.util');
+import { verifyToken  } from '../utils/jwt.util.js';
 
 const protect = (req, res, next) => {
   let token;
@@ -38,4 +38,4 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { protect, authorize };
+export { protect, authorize  };

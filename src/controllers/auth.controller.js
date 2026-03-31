@@ -1,4 +1,5 @@
-const authService = require('../services/auth.service');
+import authService from '../services/auth.service.js';
+import userRepository from '../repositories/user.repository.js';
 
 class AuthController {
   async register(req, res, next) {
@@ -45,7 +46,7 @@ class AuthController {
   async getMe(req, res, next) {
     try {
       // req.user is set in the auth middleware
-      const user = await require('../repositories/user.repository').findById(req.user.id);
+      const user = await userRepository.findById(req.user.id);
       
       if (!user) {
          return res.status(404).json({ success: false, message: 'User not found' });
@@ -61,4 +62,4 @@ class AuthController {
   }
 }
 
-module.exports = new AuthController();
+export default new AuthController();

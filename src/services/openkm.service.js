@@ -1,5 +1,5 @@
-const axios = require('axios');
-const FormData = require('form-data');
+import axios from 'axios';
+import FormData from 'form-data';
 
 class OpenKMService {
   constructor() {
@@ -70,4 +70,4 @@ class OpenKMService {
   }
 }
 
-module.exports = new OpenKMService();
+export default new OpenKMService();

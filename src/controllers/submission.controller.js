@@ -1,4 +1,4 @@
-const submissionService = require('../services/submission.service');
+import submissionService from '../services/submission.service.js';
 
 class SubmissionController {
   
@@ -119,4 +119,4 @@ class SubmissionController {
 
 }
 
-module.exports = new SubmissionController();
+export default new SubmissionController();

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const metadataConfigSchema = new mongoose.Schema(
   {
@@ -46,4 +46,4 @@ const metadataConfigSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('MetadataConfig', metadataConfigSchema);
+export default mongoose.model('MetadataConfig', metadataConfigSchema);

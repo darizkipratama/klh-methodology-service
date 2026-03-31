@@ -1,4 +1,4 @@
-const metadataService = require('../services/metadata.service');
+import metadataService from '../services/metadata.service.js';
 
 class MetadataController {
   
@@ -131,4 +131,4 @@ class MetadataController {
   }
 }
 
-module.exports = new MetadataController();
+export default new MetadataController();
