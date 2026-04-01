@@ -24,6 +24,10 @@ class UserService {
       filter.role = query.role;
     }
 
+    if (query.userType) {
+      filter.userType = query.userType;
+    }
+
     const { data, total } = await userRepository.findAllPaginated(filter, { skip, limit });
 
     return {

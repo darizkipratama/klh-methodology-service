@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema(
       enum: ['PUBLISHER', 'INTERNAL'],
       required: true,
     },
+    userType: {
+      type: String,
+      default: 'Swasta',
+      trim: true,
+    },
     isActive: {
       type: Boolean,
       default: true,

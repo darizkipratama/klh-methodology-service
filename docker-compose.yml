@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: klh-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: klh-methodology
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    container_name: klh-methodology-service
+    depends_on:
+      - mongo
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://root:example@klh-mongo:27017/klh-methodology?retryWrites=true&loadBalanced=false&serverSelectionTimeoutMS=5000&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256
+      JWT_SECRET: supersecretjwtkey
+      OPENKM_BASE_URL: http://localhost:8080/OpenKM
+      OPENKM_USERNAME: openkm
+      OPENKM_PASSWORD: admin
+    ports:
+      - '3000:3000'
+    command: pm2-runtime --name klh-methodology-service server.js
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

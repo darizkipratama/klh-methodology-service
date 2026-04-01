@@ -35,6 +35,21 @@ describe('Auth Service', () => {
       expect(user.username).toBe(userData.username);
       expect(user.companyName).toBe(userData.companyName);
       expect(user.role).toBe('PUBLISHER');
+      expect(user.userType).toBe('PUBLISHER');
+    });
+
+    it('should register a new INTERNAL userType explicitly', async () => {
+      const userData = {
+        username: 'internal_budi',
+        email: 'budi@internal.com',
+        password: 'anotherPass',
+        role: 'INTERNAL',
+        userType: 'INTERNAL',
+      };
+
+      const user = await authService.registerUser(userData);
+      expect(user.role).toBe('INTERNAL');
+      expect(user.userType).toBe('INTERNAL');
     });
 
     it('should throw error if email already exists', async () => {
@@ -72,6 +87,7 @@ describe('Auth Service', () => {
       expect(result.user).toHaveProperty('_id');
       expect(result.user.email).toBe('alice@klh.test.com');
       expect(result.user.role).toBe('INTERNAL');
+      expect(result.user.userType).toBe('INTERNAL');
 
       // Verify the token content
       const decoded = verifyToken(result.token);

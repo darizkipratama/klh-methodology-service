@@ -4,7 +4,7 @@ import { generateToken  } from '../utils/jwt.util.js';
 
 class AuthService {
   async registerUser(data) {
-    const { username, email, password, role, companyName } = data;
+    const { username, email, password, role, companyName, userType } = data;
 
     // Check if user already exists
     const existingUser = await userRepository.findByEmail(email);
@@ -23,6 +23,7 @@ class AuthService {
       companyName,
       passwordHash,
       role: role || 'PUBLISHER', // default register to Publisher (you can make ONLY internal user create Publishers later)
+      userType: userType || role || 'PUBLISHER',
     });
 
     return {
@@ -31,6 +32,7 @@ class AuthService {
       companyName: user.companyName,
       email: user.email,
       role: user.role,
+      userType: user.userType,
     };
   }
 
@@ -63,6 +65,7 @@ class AuthService {
         companyName: user.companyName,
         email: user.email,
         role: user.role,
+        userType: user.userType,
       },
     };
   }
