@@ -36,6 +36,22 @@ class SubmissionRepository {
         { new: true }
      ).populate('comments.commenterId', 'username role');
   }
+
+  async addPublicComment(id, publicCommentData) {
+     return await Submission.findByIdAndUpdate(
+        id, 
+        { $push: { publicComments: publicCommentData } },
+        { new: true }
+     );
+  }
+
+  async deletePublicComment(id, commentId) {
+     return await Submission.findByIdAndUpdate(
+        id,
+        { $pull: { publicComments: { _id: commentId } } },
+        { new: true }
+     );
+  }
 }
 
 export default new SubmissionRepository();

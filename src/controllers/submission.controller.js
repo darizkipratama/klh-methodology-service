@@ -117,6 +117,51 @@ class SubmissionController {
       }
   }
 
+  // @desc    Add public comment to a submission
+  // @route   POST /api/v1/submissions/:id/public-comments
+  // @access  Public or all users
+  async addPublicComment(req, res, next) {
+      try {
+        const { commenterName, comment } = req.body;
+        const submission = await submissionService.addPublicComment(req.params.id, commenterName, comment);
+        res.status(200).json({
+          success: true,
+          message: 'Public comment added successfully',
+          data: submission
+        });
+      } catch (error) {
+        if (error.message === 'Submission not found') {
+          return res.status(404).json({ success: false, message: error.message });
+        }
+        if (error.message === 'Public comments are not enabled for this submission at this time') {
+          return res.status(403).json({ success: false, message: error.message });
+        }
+        next(error);
+      }
+  }
+
+  // @desc    Delete a public comment
+  // @route   DELETE /api/v1/submissions/:id/public-comments/:commentId
+  // @access  Private/Internal
+  async deletePublicComment(req, res, next) {
+      try {
+        const submission = await submissionService.deletePublicComment(req.params.id, req.params.commentId, req.user);
+        res.status(200).json({
+          success: true,
+          message: 'Public comment deleted successfully',
+          data: submission
+        });
+      } catch (error) {
+        if (error.message === 'Not authorized to delete public comments') {
+          return res.status(403).json({ success: false, message: error.message });
+        }
+        if (error.message === 'Submission or comment not found' || error.message === 'Submission not found') {
+          return res.status(404).json({ success: false, message: error.message });
+        }
+        next(error);
+      }
+  }
+
 }
 
 export default new SubmissionController();

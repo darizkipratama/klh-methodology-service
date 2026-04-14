@@ -14,6 +14,9 @@ const upload = multer({
 });
 
 
+// Public endpoint for adding a public comment
+router.post('/:id/public-comments', submissionController.addPublicComment);
+
 // Menerapkan proteksi ke semua endpoint submission
 router.use(protect);
 
@@ -40,5 +43,8 @@ router.post('/:id/comments', submissionController.addComment);
 
 // Endpoint khusus untuk admin yang memeriksa dan merubah status approve/reject
 router.patch('/:id/status', authorize('INTERNAL'), submissionController.updateStatus);
+
+// Endpoint khusus internal user untuk menghapus public comment
+router.delete('/:id/public-comments/:commentId', authorize('INTERNAL'), submissionController.deletePublicComment);
 
 export default router;

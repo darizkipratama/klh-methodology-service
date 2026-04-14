@@ -560,6 +560,77 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "7. Add Public Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"commenterName\": \"Jane Doe\",\n    \"comment\": \"This is my public feedback regarding the abstract.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions/:id/public-comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions",
+								":id",
+								"public-comments"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "SUBMISSION_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "8. Delete Public Comment (INTERNAL ONLY)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/submissions/:id/public-comments/:commentId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"submissions",
+								":id",
+								"public-comments",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "SUBMISSION_ID_HERE"
+								},
+								{
+									"key": "commentId",
+									"value": "COMMENT_ID_HERE"
+								}
+							]
+						}
+					}
 				}
 			]
 		}

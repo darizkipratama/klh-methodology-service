@@ -51,7 +51,7 @@ const submissionSchema = new mongoose.Schema(
     // KMS internal approval properties
     internalReviewStatus: {
       type: String,
-      enum: ['DRAFT', 'SUBMITTED', 'UNDER_REVIEW', 'REVISION_REQUIRED', 'APPROVED', 'REJECTED'],
+      enum: ['DRAFT', 'SUBMITTED', 'UNDER_REVIEW', 'OPEN_TO_PUBLIC_COMMENT', 'REVISION_REQUIRED', 'APPROVED', 'REJECTED'],
       default: 'SUBMITTED',
       description: 'State of the document approval within this methodology system',
     },
@@ -71,6 +71,23 @@ const submissionSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
           required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    publicComments: [
+      {
+        comment: {
+          type: String,
+          required: true,
+        },
+        commenterName: {
+          type: String,
+          required: true,
+          description: 'Name of the public commenter (not linked to User collection)',
         },
         createdAt: {
           type: Date,

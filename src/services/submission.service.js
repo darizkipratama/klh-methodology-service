@@ -106,6 +106,41 @@ class SubmissionService {
     return updated;
   }
 
+  async addPublicComment(id, commenterName, commentText) {
+    // Add a public comment, only if the specific status is met
+    if (!commentText || !commenterName) throw new Error('Comment text and commenter name are required');
+
+    const submission = await submissionRepository.findById(id);
+    if (!submission) throw new Error('Submission not found');
+
+    if (submission.internalReviewStatus !== 'OPEN_TO_PUBLIC_COMMENT') {
+      throw new Error('Public comments are not enabled for this submission at this time');
+    }
+
+    const publicCommentData = {
+      comment: commentText,
+      commenterName,
+      createdAt: new Date()
+    };
+
+    return await submissionRepository.addPublicComment(id, publicCommentData);
+  }
+
+  async deletePublicComment(id, commentId, user) {
+    // Only internal users can delete public comments
+    if (user.role === 'PUBLISHER') {
+      throw new Error('Not authorized to delete public comments');
+    }
+
+    const submission = await submissionRepository.findById(id);
+    if (!submission) throw new Error('Submission not found');
+
+    const updated = await submissionRepository.deletePublicComment(id, commentId);
+    if (!updated) throw new Error('Submission or comment not found');
+
+    return updated;
+  }
+
   async updateInternalStatus(id, newStatus, user) {
     const submission = await submissionRepository.findById(id);
     if (!submission) throw new Error('Submission not found');
