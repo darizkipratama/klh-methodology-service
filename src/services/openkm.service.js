@@ -22,7 +22,16 @@ class OpenKMService {
    */
   async uploadDocument(file, targetPath, title) {
     try {
-      const docPath = `${targetPath}/${title || file.originalname}`;
+      let fileName = file.originalname;
+      if (title) {
+        const lastDotIndex = file.originalname.lastIndexOf('.');
+        const ext = lastDotIndex !== -1 ? file.originalname.substring(lastDotIndex) : '';
+        fileName = `${title}${ext}`;
+      }
+      
+      // Pastikan targetPath memiliki format yang benar untuk penggabungan
+      const formattedPath = targetPath.endsWith('/') ? targetPath : `${targetPath}/`;
+      const docPath = `${formattedPath}${fileName}`;
       
       const form = new FormData();
       form.append('docPath', docPath);
@@ -39,7 +48,7 @@ class OpenKMService {
       };
 
       // Contoh hit endpoint Create Document (sesuaikan dgn dokumentasi API OpenKM real)
-      const response = await axios.post(`${this.baseURL}/document/create`, form, config);
+      const response = await axios.post(`${this.baseURL}/document/createSimple`, form, config);
       
       return response.data; // Biasanya me-return Object Document OpenKM (beserta properties uuid, path, dll)
     } catch (error) {

@@ -12,17 +12,21 @@ class SubmissionService {
     }
 
     // 2. Upload file ke OpenKM. 
-    // Parameter targetPath ditentukan secara statis misalnya /okm:root/Pengajuan, tapi bisa dinamis.
+    // Parameter targetPath ditentukan secara dinamis berdasarkan submissionType.
     // NOTE: In production, kita perlu handle koneksi API fail agar tak masuk DB kl gagal
     let openKmData = {};
+    const uploadPath = submissionType === 'REVISION' 
+      ? '/okm:root/methodology-proposed/revision-proposed/' 
+      : '/okm:root/methodology-proposed/new-proposed/';
+
     if (file) {
-       openKmData = await openKmService.uploadDocument(file, '/okm:root/Pengajuan', title);
+       openKmData = await openKmService.uploadDocument(file, uploadPath, title);
     }
     
     // Asumsi: openKmService.uploadDocument mereturn object berisi { uuid: '...', path: '...' }
     // Untuk pengembangan dan testing lokal sebelum server OpenKM menyala, kita buat mock UUID
     const docUuid = openKmData.uuid || `okm-mock-id-${Date.now()}`;
-    const docPath = openKmData.path || `/okm:root/Pengajuan/${title || 'doc'}.pdf`;
+    const docPath = openKmData.path || `${uploadPath}${title || 'doc'}.pdf`;
 
     // 3. Simpan di database Mongo kita (dengan initial status UNPUBLISHED / SUBMITTED)
     const submissionData = {

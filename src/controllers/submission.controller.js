@@ -96,7 +96,7 @@ class SubmissionController {
   async updateStatus(req, res, next) {
       try {
         const { status } = req.body;
-        // VALID STATUSES: 'DRAFT', 'SUBMITTED', 'UNDER_REVIEW', 'REVISION_REQUIRED', 'APPROVED', 'REJECTED'
+        // VALID STATUSES: 'DRAFT', 'SUBMITTED', 'UNDER_REVIEW', 'OPEN_TO_PUBLIC_COMMENT', 'REVISION_REQUIRED', 'APPROVED', 'REJECTED'
         
         if (!status) {
            return res.status(400).json({ success: false, message: 'Status property is required' });
