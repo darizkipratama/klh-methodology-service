@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import mongoose from 'mongoose';
 import submissionService from '../../src/services/submission.service.js';
 import openKmService from '../../src/services/openkm.service.js'; // We will mock this
@@ -5,22 +6,20 @@ import User from '../../src/models/user.model.js';
 import Submission from '../../src/models/submission.model.js';
 import dbSetup from '../setup/db.setup.js';
 
-// Mock out the OpenKM integration so it doesn't try to make real HTTP calls
-jest.mock('../../src/services/openkm.service', () => {
-    return {
-        uploadDocument: jest.fn().mockResolvedValue({
-            uuid: 'mock-openkm-uuid-1234',
-            path: '/okm:root/MockFolder/testdoc.pdf',
-        }),
-        publishDocument: jest.fn().mockResolvedValue(true)
-    };
-});
+// We will use jest.spyOn for mocking in the tests
+
 
 // Setup mock users
 let publisherA, publisherB, internalAdmin;
 
 beforeAll(async () => {
   await dbSetup.connect();
+
+  jest.spyOn(openKmService, 'uploadDocument').mockResolvedValue({
+      uuid: 'mock-openkm-uuid-1234',
+      path: '/okm:root/MockFolder/testdoc.pdf',
+  });
+  jest.spyOn(openKmService, 'publishDocument').mockResolvedValue(true);
 
   // Create Users for isolation testing
   publisherA = await User.create({

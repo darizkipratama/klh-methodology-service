@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
 import authService from '../../src/services/auth.service.js';
 import dbSetup from '../setup/db.setup.js';
 import { verifyToken } from '../../src/utils/jwt.util.js';
+import User from '../../src/models/user.model.js';
 
 // Supaya proses.env.JWT_SECRET terbaca buat generate token, kita mock ke global env
 process.env.JWT_SECRET = 'test-secret';
@@ -110,7 +110,6 @@ describe('Auth Service', () => {
     it('should throw error if user is deactivated', async () => {
        // Manual deactivate directly through models or repository usually, 
        // but we can use the db logic directly
-       const User = require('../../src/models/user.model');
        await User.findOneAndUpdate({ email: 'alice@klh.test.com' }, { isActive: false });
 
        await expect(

@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 let mongoServer;
 
 // Start memory server and connect wrapper
-module.exports.connect = async () => {
+export const connect = async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
 
@@ -12,7 +12,7 @@ module.exports.connect = async () => {
 };
 
 // Disconnect and close memory server
-module.exports.closeDatabase = async () => {
+export const closeDatabase = async () => {
   if (mongoose.connection) {
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
@@ -23,7 +23,7 @@ module.exports.closeDatabase = async () => {
 };
 
 // Clear all data inside collections
-module.exports.clearDatabase = async () => {
+export const clearDatabase = async () => {
   if (mongoose.connection) {
     const collections = mongoose.connection.collections;
     for (const key in collections) {
@@ -32,3 +32,5 @@ module.exports.clearDatabase = async () => {
     }
   }
 };
+
+export default { connect, closeDatabase, clearDatabase };
