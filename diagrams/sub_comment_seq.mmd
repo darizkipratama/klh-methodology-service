@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    actor Masyarakat as Publik/Masyarakat
+    participant Sistem as Sistem (Submission Controller)
+    participant Layanan as Layanan (Submission Service)
+
+    Masyarakat->>Sistem: Mengirim Form Komentar (Nama & Komentar)
+    Sistem->>Layanan: Proses Simpan Komentar (addPublicComment)
+    
+    alt Bukan Fase Uji Publik
+        Layanan-->>Sistem: Penolakan (Komentar Publik Tidak Aktif)
+        Sistem-->>Masyarakat: Pesan Penolakan (Error 403 - Forbidden)
+    else Fase Uji Publik Terbuka
+        Layanan-->>Sistem: Mengembalikan Data Pengajuan Beserta Komentar Baru
+        Sistem-->>Masyarakat: Konfirmasi Komentar Berhasil Ditambahkan
+    end

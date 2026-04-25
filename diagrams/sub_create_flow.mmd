@@ -1,0 +1,7 @@
+flowchart TD
+    A([Pengguna Mengirim File & Metadata]) --> B{Cek Keberadaan File?}
+    B -->|Tidak Ada File| C([Pesan Penolakan: File Wajib])
+    B -->|Ada File| D{Cek Keberadaan Judul?}
+    D -->|Tidak Ada Judul| E([Pesan Penolakan: Judul Wajib])
+    D -->|Ada Judul| F[Upload File & Simpan Metadata]
+    F --> G([Konfirmasi: Pengajuan Berhasil Disimpan & Menunggu Ulasan])

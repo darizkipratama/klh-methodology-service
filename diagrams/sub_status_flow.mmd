@@ -1,0 +1,8 @@
+flowchart TD
+    A([Pengguna Internal Mengirim Pembaruan Status]) --> B{Cek Input Status?}
+    B -->|Status Kosong| C([Pesan Penolakan: Status Wajib Diisi])
+    B -->|Status Ada| D[Proses Pembaruan Status Internal]
+    D --> E{Apakah Status APPROVED?}
+    E -->|Ya| F[Publikasi Dokumen Otomatis ke OpenKM]
+    F --> G([Konfirmasi: Status Diperbarui])
+    E -->|Tidak| G

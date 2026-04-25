@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    actor Pengguna as Pengguna
+    participant Sistem as Sistem (Submission Controller)
+    participant Layanan as Layanan (Submission Service)
+
+    Pengguna->>Sistem: Mengirim Form (File & Metadata)
+    Sistem->>Sistem: Validasi Kelengkapan File & Judul
+    
+    alt Data Tidak Lengkap
+        Sistem-->>Pengguna: Pesan Penolakan (Error 400 - Bad Request)
+    else Data Lengkap
+        Sistem->>Layanan: Proses Pengunggahan (uploadSubmission)
+        Layanan-->>Sistem: Mengembalikan Data Pengajuan Baru
+        Sistem-->>Pengguna: Konfirmasi Pengajuan Berhasil (Awaiting Review)
+    end

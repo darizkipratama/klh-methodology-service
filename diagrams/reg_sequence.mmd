@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor Pengguna as Pengguna
+    participant Sistem as Sistem (Layanan Autentikasi)
+    participant Database as Basis Data
+
+    Pengguna->>Sistem: Mengirim Form Registrasi (Nama, Email, Sandi, dll)
+    Sistem->>Database: Cek ketersediaan Email (findByEmail)
+    Database-->>Sistem: Mengembalikan status Email
+    
+    alt Email sudah terdaftar
+        Sistem-->>Pengguna: Pesan Penolakan (Email sudah digunakan)
+    else Email belum terdaftar
+        Sistem->>Sistem: Proses Enkripsi Kata Sandi (Bcrypt Hashing)
+        Sistem->>Database: Simpan Data Pengguna Baru dengan peran 'PUBLISHER'
+        Database-->>Sistem: Konfirmasi Penyimpanan Berhasil
+        Sistem-->>Pengguna: Konfirmasi Registrasi Berhasil & Mengembalikan Data Profil
+    end

@@ -1,0 +1,6 @@
+flowchart TD
+    A([Masyarakat Mengirim Komentar Publik]) --> B[Proses Penambahan Komentar]
+    B --> C{Apakah Berada pada Fase Uji Publik?}
+    C -->|Tidak Terbuka| D([Pesan Penolakan: Sesi Komentar Dikunci])
+    C -->|Fase Terbuka| E[Rekam Komentar Publik di Basis Data]
+    E --> F([Konfirmasi: Komentar Berhasil Ditambahkan])

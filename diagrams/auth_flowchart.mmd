@@ -1,0 +1,9 @@
+flowchart TD
+    A([Pengguna Mengirim Kredensial Login]) --> B{Cari Email di Database}
+    B -->|Tidak Ditemukan| C([Pesan Penolakan: Kredensial Tidak Valid])
+    B -->|Ditemukan| D{Cek Status Akun}
+    D -->|Tidak Aktif| E([Pesan Penolakan: Akun Dinonaktifkan])
+    D -->|Aktif| F{Verifikasi Kata Sandi}
+    F -->|Tidak Cocok| G([Pesan Penolakan: Kredensial Tidak Valid])
+    F -->|Cocok| H[Penerbitan Token Akses Aman JWT]
+    H --> I([Login Berhasil: Mengembalikan Token & Profil])

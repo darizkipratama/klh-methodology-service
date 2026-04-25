@@ -1,0 +1,6 @@
+flowchart TD
+    A([Pengguna Mengirim Form Registrasi]) --> B{Cek Ketersediaan Email}
+    B -->|Sudah Terdaftar| C([Pesan Penolakan: Email Digunakan])
+    B -->|Belum Terdaftar| D[Enkripsi Kata Sandi dengan Bcrypt]
+    D --> E[Simpan Data Pengguna Baru]
+    E --> F([Konfirmasi Registrasi Berhasil & Data Profil])

@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    actor Internal as Pengguna Internal
+    participant Sistem as Sistem (Submission Controller)
+    participant Layanan as Layanan (Submission Service)
+
+    Internal->>Sistem: Mengirim Status Baru (Contoh: APPROVED)
+    Sistem->>Sistem: Validasi Ketersediaan Input Status
+    
+    alt Status Kosong
+        Sistem-->>Internal: Pesan Penolakan (Error 400 - Bad Request)
+    else Status Valid
+        Sistem->>Layanan: Perbarui Status Internal (updateInternalStatus)
+        Layanan-->>Sistem: Mengembalikan Data Pengajuan Terkini
+        Sistem-->>Internal: Konfirmasi Status Berhasil Diperbarui
+    end

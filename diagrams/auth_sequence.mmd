@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor Pengguna as Pengguna
+    participant Sistem as Sistem (Layanan Autentikasi)
+    participant Database as Basis Data
+
+    Pengguna->>Sistem: Mengirim Kredensial Login (Email & Kata Sandi)
+    Sistem->>Database: Mencari Pengguna berdasarkan Email
+    Database-->>Sistem: Mengembalikan Data Pengguna
+    
+    alt Pengguna Tidak Ditemukan
+        Sistem-->>Pengguna: Pesan Penolakan (Kredensial Tidak Valid)
+    else Pengguna Ditemukan
+        Sistem->>Sistem: Cek Status Keaktifan Akun
+        alt Akun Tidak Aktif / Dinonaktifkan
+            Sistem-->>Pengguna: Pesan Penolakan (Akun Dinonaktifkan)
+        else Akun Aktif
+            Sistem->>Sistem: Verifikasi Kata Sandi (Bcrypt Compare)
+            alt Sandi Tidak Cocok
+                Sistem-->>Pengguna: Pesan Penolakan (Kredensial Tidak Valid)
+            else Sandi Cocok
+                Sistem->>Sistem: Penerbitan Token Akses Aman (JWT)
+                Sistem-->>Pengguna: Login Berhasil (Mengembalikan Token & Profil)
+            end
+        end
+    end

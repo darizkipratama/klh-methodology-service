@@ -11,8 +11,8 @@ RUN npm install -g pm2
 COPY package.json package-lock.json* ./
 RUN npm install --production
 
-# Copy environment variables (optional local .env for docker build). If you don't want secrets baked in image, provide via -e or --env-file at docker run.
-COPY .env .env
+# Copy environment variables if they exist (optional local .env for docker build)
+COPY .env* ./
 
 # Copy app source
 COPY . ./
