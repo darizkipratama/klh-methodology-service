@@ -2,10 +2,10 @@ name: Build and Push Container
 
 on:
   push:
-    branches: [ "main", "master" ]
-    tags: [ 'v*.*.*' ]
+    branches: ["main", "master"]
+    tags: ["v*.*.*"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
 
 env:
   REGISTRY: ghcr.io
@@ -27,7 +27,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
