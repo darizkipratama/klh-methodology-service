@@ -183,8 +183,6 @@ class SubmissionService {
     const skip = (page - 1) * limit;
 
     const filter = {
-      internalReviewStatus: 'APPROVED',
-      openKmPublishStatus: 'PUBLISHED'
     };
 
     const { data, total } = await submissionRepository.findAllPaginated(filter, { skip, limit });
