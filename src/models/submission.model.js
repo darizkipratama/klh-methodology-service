@@ -89,6 +89,14 @@ const submissionSchema = new mongoose.Schema(
           required: true,
           description: 'Name of the public commenter (not linked to User collection)',
         },
+        eventType: {
+          type: String,
+          description: 'Type of event related to the public comment',
+        },
+        eventDate: {
+          type: Date,
+          description: 'Date of the event related to the public comment',
+        },
         createdAt: {
           type: Date,
           default: Date.now,

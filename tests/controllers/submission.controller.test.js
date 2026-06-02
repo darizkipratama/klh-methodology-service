@@ -185,13 +185,18 @@ describe('Submission Controller', () => {
   describe('addPublicComment', () => {
     it('should return 200 and add public comment', async () => {
       req.params.id = 'sub123';
-      req.body = { commenterName: 'John', comment: 'Looks good' };
+      req.body = { commenterName: 'John', comment: 'Looks good', eventType: 'Webinar', eventDate: '2026-05-21' };
       const mockUpdated = { _id: 'sub123', publicComments: [] };
       const spy = jest.spyOn(submissionService, 'addPublicComment').mockResolvedValue(mockUpdated);
 
       await submissionController.addPublicComment(req, res, next);
 
-      expect(spy).toHaveBeenCalledWith('sub123', 'John', 'Looks good');
+      expect(spy).toHaveBeenCalledWith('sub123', {
+        commenterName: 'John',
+        comment: 'Looks good',
+        eventType: 'Webinar',
+        eventDate: '2026-05-21',
+      });
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ 
         success: true, 
@@ -237,6 +242,51 @@ describe('Submission Controller', () => {
       await submissionController.deletePublicComment(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(403);
+    });
+  });
+
+  describe('getPublicSubmissions', () => {
+    it('should return 200 with public submissions and pagination', async () => {
+      const mockResult = {
+        submissions: [{ _id: 'sub1' }, { _id: 'sub2' }],
+        pagination: { total: 2, page: 1, limit: 10, totalPages: 1 }
+      };
+      
+      const spy = jest.spyOn(submissionService, 'getPublicSubmissions').mockResolvedValue(mockResult);
+
+      await submissionController.getPublicSubmissions(req, res, next);
+
+      expect(spy).toHaveBeenCalledWith(req.query);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockResult.submissions,
+        pagination: mockResult.pagination
+      });
+    });
+  });
+
+  describe('getPublicSubmission', () => {
+    it('should return 200 and submission data via ID', async () => {
+      req.params.id = 'sub123';
+      const mockSubmission = { _id: 'sub123', title: 'Public Doc' };
+      const spy = jest.spyOn(submissionService, 'getPublicSubmissionById').mockResolvedValue(mockSubmission);
+
+      await submissionController.getPublicSubmission(req, res, next);
+
+      expect(spy).toHaveBeenCalledWith('sub123');
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, data: mockSubmission });
+    });
+
+    it('should return 404 on Submission not found', async () => {
+      req.params.id = 'sub123';
+      jest.spyOn(submissionService, 'getPublicSubmissionById').mockRejectedValue(new Error('Submission not found'));
+
+      await submissionController.getPublicSubmission(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
   });
 });

@@ -197,4 +197,121 @@ describe('Submission Service', () => {
 
   });
 
+  describe('addPublicComment()', () => {
+      let publicSubmission;
+
+      beforeEach(async () => {
+        publicSubmission = await Submission.create({
+           title: 'Public Comment Doc',
+           publisherId: publisherA._id,
+           submissionType: 'NEW',
+           internalReviewStatus: 'OPEN_TO_PUBLIC_COMMENT'
+        });
+      });
+
+      it('should add a public comment with eventType and eventDate', async () => {
+          const eventDate = '2026-05-21';
+
+          const updated = await submissionService.addPublicComment(
+              publicSubmission._id,
+              {
+                commenterName: 'Jane Doe',
+                comment: 'Great work',
+                eventType: 'Webinar',
+                eventDate,
+              }
+          );
+
+          expect(updated.publicComments).toHaveLength(1);
+          const createdComment = updated.publicComments[0];
+          expect(createdComment.commenterName).toBe('Jane Doe');
+          expect(createdComment.comment).toBe('Great work');
+          expect(createdComment.eventType).toBe('Webinar');
+          expect(new Date(createdComment.eventDate).toISOString()).toBe(new Date(eventDate).toISOString());
+      });
+
+it('should throw error when eventDate is invalid', async () => {
+           await expect(
+             submissionService.addPublicComment(publicSubmission._id, {
+               commenterName: 'Jane Doe',
+               comment: 'Great work',
+               eventType: 'Webinar',
+               eventDate: 'not-a-valid-date',
+             })
+           ).rejects.toThrow('eventDate must be a valid date');
+       });
+   });
+
+  describe('getPublicSubmissions() & getPublicSubmissionById()', () => {
+    let publishedDoc, approvedDoc, draftDoc, rejectedDoc;
+
+    beforeEach(async () => {
+      publishedDoc = await Submission.create({
+        title: 'Published Public Doc',
+        publisherId: publisherA._id,
+        submissionType: 'NEW',
+        internalReviewStatus: 'APPROVED',
+        openKmPublishStatus: 'PUBLISHED'
+      });
+
+      approvedDoc = await Submission.create({
+        title: 'Approved but not published',
+        publisherId: publisherA._id,
+        submissionType: 'NEW',
+        internalReviewStatus: 'APPROVED',
+        openKmPublishStatus: 'UNPUBLISHED'
+      });
+
+      draftDoc = await Submission.create({
+        title: 'Draft Doc',
+        publisherId: publisherA._id,
+        submissionType: 'NEW',
+        internalReviewStatus: 'DRAFT',
+        openKmPublishStatus: 'UNPUBLISHED'
+      });
+
+      rejectedDoc = await Submission.create({
+        title: 'Rejected Doc',
+        publisherId: publisherA._id,
+        submissionType: 'NEW',
+        internalReviewStatus: 'REJECTED',
+        openKmPublishStatus: 'UNPUBLISHED'
+      });
+    });
+
+    it('should only return APPROVED and PUBLISHED submissions', async () => {
+      const result = await submissionService.getPublicSubmissions({ page: 1, limit: 10 });
+
+      expect(result.pagination.total).toBe(1);
+      expect(result.submissions[0].title).toBe('Published Public Doc');
+    });
+
+    it('should return 404 for non-published submission', async () => {
+      await expect(
+        submissionService.getPublicSubmissionById(approvedDoc._id)
+      ).rejects.toThrow('Submission not found');
+    });
+
+    it('should return 404 for rejected submission', async () => {
+      await expect(
+        submissionService.getPublicSubmissionById(rejectedDoc._id)
+      ).rejects.toThrow('Submission not found');
+    });
+
+    it('should return published submission by ID', async () => {
+      const result = await submissionService.getPublicSubmissionById(publishedDoc._id);
+
+      expect(result.title).toBe('Published Public Doc');
+      expect(result.internalReviewStatus).toBe('APPROVED');
+      expect(result.openKmPublishStatus).toBe('PUBLISHED');
+    });
+
+    it('should throw error for non-existent submission', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      await expect(
+        submissionService.getPublicSubmissionById(fakeId)
+      ).rejects.toThrow('Submission not found');
+    });
+  });
+
 });

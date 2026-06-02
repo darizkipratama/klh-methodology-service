@@ -48,6 +48,49 @@ class UserService {
     return await userRepository.findDistinctCompanies(searchQuery);
   }
 
+  async addUser(userData) {
+    const { username, email, password, role, companyName, userType, isActive } = userData;
+
+    if (!username || !email || !password) {
+      throw new Error('Username, email, and password are required');
+    }
+
+    const existingEmail = await userRepository.findByEmail(email);
+    if (existingEmail) {
+      throw new Error('User with this email already exists');
+    }
+
+    const existingUsername = await userRepository.findByUsername(username);
+    if (existingUsername) {
+      throw new Error('User with this username already exists');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const user = await userRepository.create({
+      username,
+      email,
+      companyName,
+      passwordHash,
+      role: role || 'PUBLISHER',
+      userType,
+      isActive: isActive !== undefined ? isActive : true,
+    });
+
+    return {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      companyName: user.companyName,
+      role: user.role,
+      userType: user.userType,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
   async getUserById(id) {
     const user = await userRepository.findById(id);
     if (!user) {

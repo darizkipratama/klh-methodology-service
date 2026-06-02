@@ -17,6 +17,28 @@ class UserController {
     }
   }
 
+  // @desc    Create a new user
+  // @route   POST /api/v1/users
+  // @access  Private/Internal
+  async addUser(req, res, next) {
+    try {
+      const user = await userService.addUser(req.body);
+      res.status(201).json({
+        success: true,
+        message: 'User created successfully',
+        data: user,
+      });
+    } catch (error) {
+      if (
+        error.message === 'User with this email already exists' ||
+        error.message === 'User with this username already exists'
+      ) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+      next(error);
+    }
+  }
+
   // @desc    Search companies by name
   // @route   GET /api/v1/users/companies
   // @access  Public

@@ -122,8 +122,13 @@ class SubmissionController {
   // @access  Public or all users
   async addPublicComment(req, res, next) {
       try {
-        const { commenterName, comment } = req.body;
-        const submission = await submissionService.addPublicComment(req.params.id, commenterName, comment);
+        const { commenterName, comment, eventType, eventDate } = req.body;
+        const submission = await submissionService.addPublicComment(req.params.id, {
+          commenterName,
+          comment,
+          eventType,
+          eventDate,
+        });
         res.status(200).json({
           success: true,
           message: 'Public comment added successfully',
@@ -160,6 +165,40 @@ class SubmissionController {
         }
         next(error);
       }
+  }
+
+  // @desc    Get all approved and published submissions (Public)
+  // @route   GET /api/v1/submissions/public
+  // @access  Public
+  async getPublicSubmissions(req, res, next) {
+    try {
+      const result = await submissionService.getPublicSubmissions(req.query);
+      res.status(200).json({
+        success: true,
+        data: result.submissions,
+        pagination: result.pagination,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // @desc    Get a single approved and published submission by ID (Public)
+  // @route   GET /api/v1/submissions/:id/public
+  // @access  Public
+  async getPublicSubmission(req, res, next) {
+    try {
+      const submission = await submissionService.getPublicSubmissionById(req.params.id);
+      res.status(200).json({
+        success: true,
+        data: submission,
+      });
+    } catch (error) {
+      if (error.message === 'Submission not found') {
+        return res.status(404).json({ success: false, message: error.message });
+      }
+      next(error);
+    }
   }
 
 }

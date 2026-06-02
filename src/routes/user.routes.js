@@ -13,7 +13,8 @@ router.use(authorize('INTERNAL'));
 
 // Resource: /api/v1/users
 router.route('/')
-  .get(userController.getUsers); // Mendapatkan all users dgn pagination & search
+  .get(userController.getUsers) // Mendapatkan all users dgn pagination & search
+  .post(userController.addUser); // Tambah user baru
 
 router.route('/:id')
   .get(userController.getUser) // Get single user details

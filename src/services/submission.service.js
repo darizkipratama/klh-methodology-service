@@ -110,7 +110,9 @@ class SubmissionService {
     return updated;
   }
 
-  async addPublicComment(id, commenterName, commentText) {
+  async addPublicComment(id, publicCommentInfo) {
+    const { commenterName, comment: commentText, eventType, eventDate } = publicCommentInfo;
+
     // Add a public comment, only if the specific status is met
     if (!commentText || !commenterName) throw new Error('Comment text and commenter name are required');
 
@@ -121,10 +123,20 @@ class SubmissionService {
       throw new Error('Public comments are not enabled for this submission at this time');
     }
 
+    let parsedEventDate;
+    if (eventDate) {
+      parsedEventDate = new Date(eventDate);
+      if (Number.isNaN(parsedEventDate.getTime())) {
+        throw new Error('eventDate must be a valid date');
+      }
+    }
+
     const publicCommentData = {
       comment: commentText,
       commenterName,
-      createdAt: new Date()
+      eventType,
+      eventDate: parsedEventDate,
+      createdAt: new Date(),
     };
 
     return await submissionRepository.addPublicComment(id, publicCommentData);
@@ -163,6 +175,40 @@ class SubmissionService {
     }
 
     return await submissionRepository.updateById(id, updatePayload);
+  }
+
+  async getPublicSubmissions(query) {
+    const page = parseInt(query.page, 10) || 1;
+    const limit = parseInt(query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const filter = {
+      internalReviewStatus: 'APPROVED',
+      openKmPublishStatus: 'PUBLISHED'
+    };
+
+    const { data, total } = await submissionRepository.findAllPaginated(filter, { skip, limit });
+
+    return {
+      submissions: data,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async getPublicSubmissionById(id) {
+    const submission = await submissionRepository.findById(id);
+    if (!submission) throw new Error('Submission not found');
+
+    if (submission.internalReviewStatus !== 'APPROVED' || submission.openKmPublishStatus !== 'PUBLISHED') {
+      throw new Error('Submission not found');
+    }
+
+    return submission;
   }
 }
 

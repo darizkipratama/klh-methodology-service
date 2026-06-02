@@ -14,6 +14,10 @@ const upload = multer({
 });
 
 
+// Public endpoints for submissions
+router.get('/public', submissionController.getPublicSubmissions);
+router.get('/:id/public', submissionController.getPublicSubmission);
+
 // Public endpoint for adding a public comment
 router.post('/:id/public-comments', submissionController.addPublicComment);
 

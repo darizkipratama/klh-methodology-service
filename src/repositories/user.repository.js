@@ -10,6 +10,10 @@ class UserRepository {
     return await User.findOne({ email });
   }
 
+  async findByUsername(username) {
+    return await User.findOne({ username });
+  }
+
   async findById(id) {
     return await User.findById(id).select('-passwordHash');
   }
